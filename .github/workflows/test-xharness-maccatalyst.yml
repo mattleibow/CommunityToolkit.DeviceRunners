@@ -7,6 +7,10 @@ on:
   release:
     types: [ published ]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
 
   maccatalyst:
@@ -36,7 +40,8 @@ jobs:
           --timeout="00:02:00" \
           --launch-timeout=00:06:00 \
           --app sample/test/DeviceTestingKitApp.DeviceTests/bin/${{ env.TEST_CONFIGURATION }}/${{ env.TEST_TARGET_FRAMEWORK }}/${{ env.TEST_RUNTIME_IDENTIFIER }}/DeviceTestingKitApp.DeviceTests.app \
-          --output-directory artifacts
+          --output-directory artifacts \
+          --verbosity
     - name: Upload Artifacts
       uses: actions/upload-artifact@v4
       if: ${{ always() }}
